@@ -1,0 +1,10 @@
+<div id="header">
+	<a id="topit_logo" href="/"><p>Topit</p></a>
+<%if @btn==:login and !signed_in?%>
+<a href="/signin"class="signup">Login</a>
+<%elsif !signed_in?%>
+<a href="/signup"class="signup">Sign up</a>
+<%else%>
+<div class="username">current_user.name<div>
+<%end%>
+</div>
