@@ -2,14 +2,16 @@
 <html>
 <head>
   <title>Topit pick the top of any category</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 <%=render partial:'layouts/header',:locals => {:@btn=>if yield(:login).empty? then :login else :signup end}%>
-
+<% flash.each do |key, value|%>
+	<div class= "alert alert-<%= key%>"><%= value%></div>
+	<%end%>
 <%= yield %>
-
+<%= javascript_include_tag "static_pages" %>
 </body>
 </html>

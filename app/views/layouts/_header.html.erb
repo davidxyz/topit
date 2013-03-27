@@ -5,6 +5,6 @@
 <%elsif !signed_in?%>
 <a href="/signup"class="signup">Sign up</a>
 <%else%>
-<div class="username">current_user.name<div>
+<div class="username"><%=current_user.name%><i class="icon-caret-down icon-white" style="padding-left:4px"></i></div>
 <%end%>
 </div>

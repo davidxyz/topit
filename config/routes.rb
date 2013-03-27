@@ -3,8 +3,12 @@ Topit::Application.routes.draw do
   # first created -> highest priority.
   root to: 'static_pages#home'
   match '/signin', to: 'sessions#new'
+  match '/signinin', to: 'sessions#create'
   match '/signout', to: 'sessions#destroy'
   match '/signup', to: 'users#new'
+  match '/signupup', to: 'users#create'
+  match '/post',to: 'microposts#new'
+  match '/commands/postit',to: 'microposts#create'
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action

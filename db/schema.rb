@@ -11,7 +11,50 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130325183216) do
+ActiveRecord::Schema.define(:version => 20130327124956) do
+
+  create_table "comments", :force => true do |t|
+    t.integer  "commentable_id",   :default => 0
+    t.string   "commentable_type", :default => ""
+    t.string   "title",            :default => ""
+    t.text     "body",             :default => ""
+    t.string   "subject",          :default => ""
+    t.integer  "user_id",          :default => 0,  :null => false
+    t.integer  "parent_id"
+    t.integer  "lft"
+    t.integer  "rgt"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
+  add_index "comments", ["commentable_id"], :name => "index_comments_on_commentable_id"
+  add_index "comments", ["user_id"], :name => "index_comments_on_user_id"
+
+  create_table "microposts", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "posttype"
+    t.string   "title"
+    t.integer  "likes",      :default => 0
+    t.integer  "integer",    :default => 0
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "microposts", ["user_id", "created_at"], :name => "index_microposts_on_user_id_and_created_at"
+
+  create_table "miniposts", :force => true do |t|
+    t.text     "content"
+    t.string   "name"
+    t.string   "image"
+    t.integer  "user_id"
+    t.integer  "micropost_id"
+    t.integer  "likes",        :default => 0
+    t.integer  "integer",      :default => 0
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
+
+  add_index "miniposts", ["user_id", "created_at"], :name => "index_miniposts_on_user_id_and_created_at"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false

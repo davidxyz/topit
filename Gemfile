@@ -7,7 +7,9 @@ gem 'will_paginate','3.0.3'
 gem 'bootstrap-will_paginate','0.0.6'
 gem "font-awesome-rails"
 gem 'sqlite3'
-
+gem 'acts_as_commentable_with_threading'
+gem 'carrierwave'
+gem 'mini_magick'
 
 # Gems used only for assets and not required
 # in production environments by default.

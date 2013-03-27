@@ -1,0 +1,1 @@
+miniposts_controller.rb

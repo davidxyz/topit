@@ -2,12 +2,49 @@
 @import "font-awesome";
 body{
 	background-color: #81DAF5;
+	overflow-y:scroll; 
 }
 a{
 	text-decoration: none;
 }
 a:hover{
 	text-decoration: none;
+}
+.username_dropdown{
+	position: fixed;
+	width:100px;
+	height:35px;
+	background-color:#000; 
+	z-index: 1001;
+	border-radius: 3px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	text-align: center;
+	.option{
+		position: relative;
+		top: 5px;
+		width: inherit;
+		text-align: center;
+		color: #fff;
+		border-bottom: #000;
+	}
+	&:before{
+        content: ' ';
+  display: block;
+    position: absolute;
+    z-index:0;
+    left: 40px;
+    top: -9px;
+    width: 18px;
+    height: 18px;
+	border-color: rgba(208,213,203,0.5);
+    border-width: 1px;
+    border-style: none none solid solid;
+    background-color: #333;
+    transform: rotate(132deg);
+    -webkit-transform: rotate(132deg);
+    -moz-transform: rotate(132deg);
+      }
 }
 #header{
 	z-index: 1000;
@@ -24,6 +61,14 @@ background-color: #0B0B3B;
   background-image: -o-linear-gradient(top, #0B173B, #0B0B3B);
   background-image: linear-gradient(to bottom, #0B173B, #0B0B3B);
   background-repeat: repeat-x;
+  .username{
+  	width: 10%;
+  	height:inherit;
+  	float: right;
+  	color: #fff;
+  	text-align: center;
+  	margin: 12px 0px 0 0;
+  }
 }
 .main_content{
 	position: absolute;
@@ -38,7 +83,14 @@ background-color: #0B0B3B;
 -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
 -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
 -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+overflow: fixed;
+	.minipost{
 
+	}
+	.btn{
+		float: right;
+		margin-left: 10px;
+	}
 }
 .main_content:before {
   content: '';
@@ -193,12 +245,11 @@ letter-spacing: 0.1em;
 /*login*/
 .container_login{
 	position: absolute;
-	top:180px;
+	top:100px;
 	left:430px;
 	font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
   color: #404040;
 }
- 
 .login {
   position: relative;
   margin: 0 auto;
@@ -243,7 +294,9 @@ letter-spacing: 0.1em;
   background: rgba(0, 0, 0, 0.08);
   border-radius: 4px;
 }
- 
+ .post{
+ 	left: 600px;
+ }
 .login h1 {
   margin: -20px -20px 21px;
   line-height: 40px;
@@ -274,13 +327,11 @@ letter-spacing: 0.1em;
 .login input[type=text], .login input[type=password] {
   width: 278px;
 }
-
-input {
+input,textarea {
   font-family: 'Lucida Grande', Tahoma, Verdana, sans-serif;
   font-size: 14px;
 }
- 
-input[type=text], input[type=password] {
+input[type=text], input[type=password],textarea {
   margin: 5px;
   padding: 0 10px;
   width: 200px;
@@ -294,6 +345,11 @@ input[type=text], input[type=password] {
   -moz-outline-radius: 3px;
   -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+textarea:focus{
+ border-color: #25DF00 #28F000 #28F000;
+ outline: 5px solid rgba(0,213,0,0.2);
+ outline-offset: 0;
 }
  
 input[type=text]:focus, input[type=password]:focus {
@@ -333,3 +389,77 @@ input[type=submit]:active {
   -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
 }
+.alert{
+  position: absolute;
+  top:40px;
+  left:0px;
+  text-align: center;
+  width:100%;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.75);
+}
+.alert-error{
+	border-bottom: 2px solid #EE0000;
+}
+#error_explanation ul{
+position: absolute;
+right:50px;
+top:200px;
+}
+.postit{
+	left:80px;
+	top:200px;
+}
+
+ .minipost_form{
+ 	position: absolute;
+ 	width: 600px;
+ 	font-size: 10px;
+ 	top:20px;
+ 	input[type='text']{
+ 		height: 20px;
+ 	}
+ 	span{
+ 		position: relative;
+ 		top:-5px;
+ 		float: right;
+ 		margin:0 100px 0px 0;
+ 		i{
+ 			position: relative;
+ 			width: 20px;
+ 			height: 20px;
+ 			padding-left:10px; 
+ 			cursor: pointer; 
+ 		}
+ 	}
+ 	textarea{
+ 		width: 469px;
+ 		max-width: 469px;
+ 	}
+ input[type='file'] {
+ 	width: 80px;
+ 	float: left;
+  position: absolute;
+  top:30px;
+ }
+ p{
+ 	position: relative;
+ 	margin-left: 100px;
+ }
+ }
+ .link_to_post{
+ 	top:35px;
+ 	left: 100px;
+ 	color: #000;
+ 	font-weight: bold;
+ 	text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+ 	font-size: 17px;
+ 	text-align: center;
+ 	vertical-align: middle;
+position:"absolute";
+width:200px;
+height:'100px';
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
+border-radius: 10px;
+background-color:"#00ACE5";
+ }

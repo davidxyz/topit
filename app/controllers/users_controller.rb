@@ -1,10 +1,8 @@
 class UsersController < ApplicationController
   def new
-    @user=User.new
   end
   def edit
     @user=User.find(params[:id])
-
   end
   def show
     @user=User.find_by_name(params[:name]) unless params[:name].nil?
@@ -35,14 +33,13 @@ class UsersController < ApplicationController
     end
   end
   def create
-    @user=User.new(params[:user])
+    @user=User.new(name:params[:name],password:params[:password],email:params[:email],password_confirmation:params[:password_confirmation])
     if @user.save
-      #handle a successful save
       sign_in @user
-      flash[:success]="welcome to the Meddler"
-      redirect_to @user
+      flash[:success]="welcome to Topit"
+      redirect_to "/"
     else
-      render 'new'
+      render 'new',:@user=>@user 
     end
   end
   def update

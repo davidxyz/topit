@@ -1,9 +1,23 @@
-<div class="main_content"></div>
+<div class="main_content">
+	<div class="minipost_form" style="display:none">
+	<p><input type="text" name="name" value="" placeholder="name..."></p><span><i class="icon-link"></i><i class="icon-bold"></i><i class="icon-italic"></i></span>
+	<p><textarea name="content" value="" placeholder="Description..."></textarea></p>
+     <input type="file" name="password" value="image">
+     <%if @micropost.miniposts.any?%>
+     <%@micropost.miniposts.each do |post|%>
+     <div class="minipost">post</div>
+     <%end%>
+     <%else%>
+     <%end%>
+</div>
+	<i class="btn icon-magic">Add</i>
+	<i class="btn icon-signal">stats</i>
+</div>
 <a href="#" class="hleft"><i class="icon-chevron-left icon-2x"></i></a>
 <a href="#" class="hright"><i class="icon-chevron-right icon-2x"></i></a>
 <div class="comments_container">
 	<div class="comments_header">
-		<span class="title">Top 5 movies by <span class="user">John</span></span>
+		<span class="title"><%=@micropost.title%> by <span class="user"><%=@micropost.user.name%></span></span>
 			<span class="tag">
 				<i class="icon-white icon-tags"></i>
 				<p style="display:inline">movies</p>
