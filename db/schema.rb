@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130327124956) do
+ActiveRecord::Schema.define(:version => 20130329030420) do
 
   create_table "comments", :force => true do |t|
     t.integer  "commentable_id",   :default => 0
@@ -55,6 +55,30 @@ ActiveRecord::Schema.define(:version => 20130327124956) do
   end
 
   add_index "miniposts", ["user_id", "created_at"], :name => "index_miniposts_on_user_id_and_created_at"
+
+  create_table "relationshipks", :force => true do |t|
+    t.integer  "subscriber_id"
+    t.integer  "subscribed_id"
+    t.string   "post_ids"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "relationshipks", ["subscribed_id", "subscriber_id"], :name => "index_relationshipks_on_subscribed_id_and_subscriber_id", :unique => true
+  add_index "relationshipks", ["subscribed_id"], :name => "index_relationshipks_on_subscribed_id"
+  add_index "relationshipks", ["subscriber_id"], :name => "index_relationshipks_on_subscriber_id"
+
+  create_table "relationshipls", :force => true do |t|
+    t.integer  "liker_id"
+    t.integer  "liked_id"
+    t.string   "posttype",   :default => "micropost"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+  end
+
+  add_index "relationshipls", ["liked_id"], :name => "index_relationshipls_on_liked_id"
+  add_index "relationshipls", ["liker_id", "liked_id", "posttype"], :name => "index_relationshipls_on_liker_id_and_liked_id_and_posttype", :unique => true
+  add_index "relationshipls", ["liker_id"], :name => "index_relationshipls_on_liker_id"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false

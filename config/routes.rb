@@ -2,6 +2,7 @@ Topit::Application.routes.draw do
   # The priority is based upon order of creation:
   # first created -> highest priority.
   root to: 'static_pages#home'
+  match '/post/:id/:name'=>'microposts#show',:name=>/[a-zA-z_0-9]+/i,:id=>/[0-9]+/
   match '/signin', to: 'sessions#new'
   match '/signinin', to: 'sessions#create'
   match '/signout', to: 'sessions#destroy'
@@ -9,6 +10,14 @@ Topit::Application.routes.draw do
   match '/signupup', to: 'users#create'
   match '/post',to: 'microposts#new'
   match '/commands/postit',to: 'microposts#create'
+  match '/minipostit',to: 'miniposts#create'
+  match '/commands/comment_on_it',to: 'comments#create'
+  match '/commands/miniposts/inc', to: 'miniposts#increment'
+  match '/commands/microposts/inc', to: 'microposts#increment'
+  match '/commands/microposts/subscribe', to: 'microposts#subscribe'
+  match '/commands/no_other_users', to: 'users#no_other_users'
+  match '/commands/no_other_emails', to: 'users#no_other_emails'
+  match '/commands/json/subscriptions', to: 'users#subscriptions'
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action

@@ -4,6 +4,12 @@ class UsersController < ApplicationController
   def edit
     @user=User.find(params[:id])
   end
+  def subscriptions
+    count=current_user.subscriptions(:top)
+     respond_to do |format|
+      format.json { render :json => { :count=>count}}
+    end
+  end
   def show
     @user=User.find_by_name(params[:name]) unless params[:name].nil?
     @user=User.find(params[:id]) unless params[:id].nil?

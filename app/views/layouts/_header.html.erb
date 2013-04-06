@@ -1,5 +1,5 @@
 <div id="header">
-	<a id="topit_logo" href="/"><p>Topit</p></a>
+	<a id="topit_logo" href="/"><p>Toppiz</p></a>
 <%if @btn==:login and !signed_in?%>
 <a href="/signin"class="signup">Login</a>
 <%elsif !signed_in?%>
@@ -7,4 +7,8 @@
 <%else%>
 <div class="username"><%=current_user.name%><i class="icon-caret-down icon-white" style="padding-left:4px"></i></div>
 <%end%>
+</div>
+<div class="username_dropdown hide">
+	<div class="option"><i class="icon-pencil icon-white"></i><a href="/post">post</a></div>
+	<div class="option"><i class="icon-pencil icon-white"></i><a>subscriptions</a><span class="count">0</span></div>
 </div>

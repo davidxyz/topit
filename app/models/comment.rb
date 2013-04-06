@@ -1,6 +1,7 @@
 class Comment < ActiveRecord::Base
   acts_as_nested_set :scope => [:commentable_id, :commentable_type]
-
+has_many :reverse_relationshipls,foreign_key: "liked_id",foreign_key:"Comment",class_name:"Relationshipl", dependent: :destroy
+ has_many :likers, through: :reverse_relationshipls,source: :liker
   validates_presence_of :body
   validates_presence_of :user
 
@@ -12,7 +13,12 @@ class Comment < ActiveRecord::Base
 
   # NOTE: Comments belong to a user
   belongs_to :user
-
+  def inc 
+   self.update_attribute(:meds,self.meds+1)
+  end
+  def dec
+    self.update_attribute(:meds,self.meds-1)
+  end
   # Helper class method that allows you to build a comment
   # by passing a commentable object, a user_id, and comment text
   # example in readme
