@@ -14,10 +14,14 @@ has_many :reverse_relationshipls,foreign_key: "liked_id",foreign_key:"Comment",c
   # NOTE: Comments belong to a user
   belongs_to :user
   def inc 
-   self.update_attribute(:meds,self.meds+1)
+   self.update_attribute(:likes,self.likes+1)
   end
   def dec
-    self.update_attribute(:meds,self.meds-1)
+    self.update_attribute(:likes,self.likes-1)
+  end
+  def destroy_it
+    Comment.where(id:self.id).first.destroy
+    Relationshipl.where(liked_id:self.id,posttype:"Comment").first.destroy
   end
   # Helper class method that allows you to build a comment
   # by passing a commentable object, a user_id, and comment text

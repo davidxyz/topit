@@ -11,13 +11,15 @@ Topit::Application.routes.draw do
   match '/post',to: 'microposts#new'
   match '/commands/postit',to: 'microposts#create'
   match '/minipostit',to: 'miniposts#create'
-  match '/commands/comment_on_it',to: 'comments#create'
   match '/commands/miniposts/inc', to: 'miniposts#increment'
   match '/commands/microposts/inc', to: 'microposts#increment'
+  match '/commands/comments/inc', to: 'comments#increment'
   match '/commands/microposts/subscribe', to: 'microposts#subscribe'
   match '/commands/no_other_users', to: 'users#no_other_users'
   match '/commands/no_other_emails', to: 'users#no_other_emails'
   match '/commands/json/subscriptions', to: 'users#subscriptions'
+  match '/commands/inc_a_comment', to: 'comments#increment'
+  match '/commands/create_a_comment', to: 'comments#create'
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action

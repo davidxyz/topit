@@ -37,6 +37,7 @@ $(".home .icon-magic").click(function(){
 	}
 	$this=$(this);
 	if(!$this.hasClass("active")){
+		$(".down_btn").addClass("disabled");
 	$(".minipost_form").fadeIn(1000);
 	var main_content=$(".main_content");
 	$(".minipost").each(function(index,value){
@@ -53,6 +54,8 @@ $(".home .icon-magic").click(function(){
 	$this.addClass("active");
 	}else{
 	$(".minipost_form").fadeOut(1000);
+	if(!$(".down_btn").data("lock")) $(".down_btn").removeClass("disabled");
+	$(".down_btn").addClass("disabled");
 	$(".minipost").animate({top:"-="+$(".minipost_form").height()+'px',opacity:'1'},1000);
 	$(".main_content .wrapper>:nth-child(5)").show();
 	$this.removeClass("active");
@@ -137,6 +140,27 @@ $(document).on("mouseenter","[data-title]",function(e){
 var offset = $this.offset();
 var height = $this.height();
 var width = $this.width();
+if($this.parent().hasClass("container")){
+var top = offset.top +height+10 +"px";
+var left = offset.left -10+ "px";
+$this.parent().hasClass("commentz")||$this.hasClass("commentz")?tooltip.addClass("purple"):tooltip.addClass("blue")
+	tooltip.css({
+        position: 'absolute',
+        background: $this.parent().hasClass("commentz")||$this.hasClass("commentz")?'#9525a6':'#81DAF5',
+        padding: '7px',
+        zIndex: 999,
+        width:'30px',
+        height:'7px',
+        display: 'block',
+        left:  left,
+        "font-size":"8px",
+        "font-weight":"bold",
+        "text-transform":"capitalize",
+        "text-align":"center",
+        top:top,
+        color:'white'
+    }).insertBefore(document.body);
+}else{
 var top = offset.top -height-17 +"px";
 var left = offset.left - width+ "px";
 	tooltip.css({
@@ -145,9 +169,9 @@ var left = offset.left - width+ "px";
         border: '1px solid black',
         padding: '10px',
         zIndex: 999,
-        width:'70px',
+        width:'50px',
         height:'7px',
-        display: 'none',
+        display: 'block',
         left:  left,
         "font-size":"12px",
         "text-transform":"capitalize",
@@ -155,9 +179,8 @@ var left = offset.left - width+ "px";
         top:top,
         color:'white'
     }).insertBefore(document.body);
-
+}
    tooltip.html($this.attr('data-title'));
-   tooltip.fadeTo("slow",0.6);
 
 });
 function is_signed_in(){
@@ -189,25 +212,17 @@ $('#otooltip').remove();
 	comment.prepend(name);
 	$(this).parent().addClass("active");
 	name.text($("#header .username").text());
+	var comments=$("ol.comments li");
+	comments.animate({top:"+=100"});
+	comments.fadeTo(500,0.5);
 	}else{
 		$(".comment_text").remove();
 		$(this).parent().removeClass("active");
+		var comments=$("ol.comments li");
+	comments.animate({top:"-=100"});
+	comments.fadeTo(500,1);
 	}
  });
- $(document).on("keypress",".comment_text textarea",function(e){
-if(e.which==13){//presses enter
-	$.ajax({
-        url: '/commands/comment_on_it',  //server script to process data
-        type: 'POST',
-        dataType: "json",
-        // Form data
-        data: {body:$(this).val(),id:$(".main_content").attr("id")},
-        //Options to tell JQuery not to process data or worry about content-type
-    }).done(function(response){
-
-    });
-}
-});
  $(".like_counter i").on("click",function(){
 	var $this=$(this);
 	var count=$this.parent().children("p");
@@ -273,7 +288,6 @@ $.ajax({
   		data: {name:$this.val()},}).done(function(response){
   			var span=$(document.createElement('span'));
   			span.appendTo(div);
-  			console.log(response);
   			 if (response.user){
   			 	img.attr("src","/assets/cross.png");
   			 	span.text("Name taken");
@@ -313,7 +327,6 @@ $.ajax({
   		data: {email:$this.val()},}).done(function(response){
   			var span=$(document.createElement('span'));
   			span.appendTo(div);
-  			console.log(response);
   			if (response.email){
   			 	img.attr("src","/assets/cross.png");
   			 	span.text("Email is taken");
@@ -335,4 +348,238 @@ $.ajax({
   			 }
   		});},1000);
 }
+});
+if($(".down_btn").hasClass("disabled")){
+$(".down_btn").data("lock",true);
+}
+$("span.content p.show").on("click",function(){
+$this=$(this);
+var minipost=$this.parents(".minipost");
+var offset=$(".minipost.true").offset();//topcomment
+ minipost.data("minipost_position",minipost.parent().children().index(minipost));
+$(".minipost").addClass("hidden");
+minipost.removeClass("hidden");
+$(".down_btn").addClass("disabled");
+	if(minipost.hasClass("true") || minipost==$(".minipost").filter(function(value){!$(value).hasClass("hidden")})[0]){
+		
+	}else{
+	 minipost.css({top:"0px",left:"0px"});
+	}
+	var old_content=minipost.children(".content").text();
+	var hidden_content=minipost.find(".hidden_content");
+	minipost.find("p.show").remove();
+	minipost.children(".content").text(hidden_content.text());
+ 	minipost.find(".hidden_content").text(old_content);
+ 	var reply=$(document.createElement('i'));
+ 	var btn=$(document.createElement('div'));
+ 	btn.addClass("go_back");
+ 	btn.append(reply);
+ 	minipost.append(btn);
+ 	reply.addClass("icon-reply");
+ 	reply.addClass("icon-white");
+});
+var pshow=true;//global bool key to lock below event handler, so that it only executes once.
+$(document).on("click","span.content p.show",function(){
+	if(pshow){
+$this=$(this);
+pshow=false;
+var minipost=$this.parents(".minipost");
+var offset=$(".minipost.true").offset();//topcomment
+ minipost.data("minipost_position",minipost.parent().children().index(minipost));
+$(".minipost").addClass("hidden");
+minipost.removeClass("hidden");
+$(".down_btn").addClass("disabled");
+	if(minipost.hasClass("true") || minipost==$(".minipost").filter(function(value){!$(value).hasClass("hidden")})[0]){
+		//nothing goes
+	}else{
+	 minipost.css({top:"0px",left:"0px"});
+	}
+	var old_content=minipost.children(".content").text();
+	var hidden_content=minipost.find(".hidden_content");
+	minipost.find("p.show").remove();
+	minipost.children(".content").text(hidden_content.text());
+ 	minipost.find(".hidden_content").text(old_content);
+ 	var reply=$(document.createElement('i'));
+ 	var btn=$(document.createElement('div'));
+ 	btn.addClass("go_back");
+ 	btn.append(reply);
+ 	minipost.append(btn);
+ 	reply.addClass("icon-reply");
+ 	reply.addClass("icon-white");
+ }
+ });
+if($(".down_btn").length>0){
+	$(".down_btn").data("index",0);
+}
+$(".down_btn").on("click",function(){
+	$this=$(this);
+	if($this.hasClass("disabled")){return false;}
+	$this.data("index",$this.data("index")+5);
+	if($this.data("index")>=5){
+		$(".up_btn").removeClass("disabled");
+	}
+	var reached_end=false;
+	$(".minipost").each(function(index,value){
+		if(index>=$this.data("index") && index<$this.data("index")+5){
+			$(value).removeClass("hidden");
+			reached_end=true;
+		}else{
+			$(value).addClass("hidden");
+			reached_end=false;
+		}
+	});
+	if(reached_end){$this.addClass("disabled");}
+});
+$(".up_btn").on("click",function(){
+	$this=$(this);
+	$$this=$(".down_btn");//they are like counterparts
+	if($this.hasClass("disabled")){return false;}
+	$$this.data("index",$$this.data("index")-5);
+	if($$this.data("index")<5){
+		$this.addClass("disabled");
+		$$this.removeClass("disabled");
+	}
+	$(".minipost").each(function(index,value){
+		if(index>=$$this.data("index") && index<$$this.data("index")+5){
+			$(value).removeClass("hidden");
+		}else{
+			$(value).addClass("hidden");
+		}
+	});
+});
+$(document).on("click",".go_back",function(){//make the page normal again
+$this=$(this);
+var minipost=$this.parent();
+var $$this=$(".down_btn");
+var pos=minipost.data("minipost_position");
+var content=minipost.children(".content");
+pshow=true;
+if(!$$this.data("lock")) $$this.removeClass("disabled");
+pos==0?minipost.prependTo($(".wrapper")):minipost.insertAfter($(".minipost")[pos-1]);
+		var old_content=content.text();
+		content.text(minipost.find(".hidden_content").text().substr(0,minipost.find(".hidden_content").text().length-3))
+		minipost.find(".hidden_content").text(old_content);
+		$(".minipost").each(function(index,value){
+		if(index>=$$this.data("index") && index<$$this.data("index")+5){
+			$(value).removeClass("hidden");
+		}else{
+			$(value).addClass("hidden");
+		}
+	});
+		var show=$(document.createElement('p'));
+		show.addClass("show");
+		show.text("...");
+		minipost.children(".content").append(show);
+		minipost.removeAttr("style");
+		minipost.children(".go_back").remove();
+	
+});
+function constructComment(comment){
+	var comment_wrapper=$(document.createElement('li'));
+	var name=$(document.createElement('p'));
+	var body=$(document.createElement('p'));
+	var container=$(document.createElement('div'));
+	var likes=$(document.createElement('span'));
+	var commentz=$(document.createElement('span'));
+	var timestamp=$(document.createElement('span'));
+	comment_wrapper.addClass("comment_wrapper");
+	name.addClass("name");
+	name.text(comment.children("p").text());
+	med_container.addClass("container");
+	meds.addClass("likez");meds.text(1);
+	commentz.addClass("commentz");
+	commentz.text("0");
+	timestamp.addClass("timestamp");timestamp.text("Posted 1 second ago");
+	body.addClass("body");
+	body.text(comment.find("textarea").val());
+	comment_wrapper.append(body);
+	comment_wrapper.append(name);
+	comment_wrapper.append(container);
+	container.append(name)
+	container.append(likes);
+	container.append(commentz);
+	comment_wrapper.append(timestamp);
+	comment_wrapper.prependTo($("ol.comments"));
+	$(".comment_wrapper").fadeTo(500,1);
+	$(".comments i").trigger("click");
+}
+var comment_text_key=true;
+$(document).on("keypress",".comment_text textarea",function(e){
+if(e.type=="keypress" && e.which==13){//also dont forget to replicate validations on the server side
+	if(comment_text_key){
+	var $this=$(this);
+	if($this.val()=="" || $this.val().legnth<3){return false;}
+//exit if the user submits 
+		var id=$(".main_content").attr('id');
+		$.ajax({
+		type: "post",
+		dataType: "json",
+  		url: '/commands/create_a_comment',
+  		data: {micropost_id:id,body:$this.val()},
+  	}).done(function(response){
+  		
+	if(response.valid==true){//animate a DIY bounce effect
+		constructComment($this.parent());
+		comment_text_key=false;
+
+	}
+	else{//error
+	var offset=$this.parent().offset();
+	var error_msg=$(document.createElement('div'));
+	$(document.body).append(error_msg);
+	error_msg.addClass("error");
+	error_msg.text("something went wrong");
+	error_msg.fadeOut(1000);
+	}
+
+  	});
+}else{comment_text_key=true;}
+}
+});
+$(".commentz").on("click",function(){
+if(!$(this).hasClass("active")){
+ 	var comment=$(document.createElement('div'));
+ 	var name=$(document.createElement('p'));
+	var text=$(document.createElement('textarea'));
+	var p=$(this).parent().parent();
+	comment.addClass("comment_text");
+	comment.appendTo($(document.body));
+	comment.append(text);
+	comment.prepend(name);
+	$(".commentz").each(function(index,value){//shut off everythign else
+		if($(value).hasClass("active") && $(value)!=$(this)){$(value).trigger("click");}
+	});
+	$(".comments i").parent().hasClass("active")?$(".comments i").trigger("click"):"nothing"
+	comment.css({top:p.offset().top+20+'px',left:p.offset().left+p.width()+30+'px'});
+	$(this).addClass("active");
+	name.text($("#header .username").text());
+	var comments=$("ol.comments li");
+	}else{
+		$(".comment_text").remove();
+		$(this).removeClass("active");
+		var comments=$("ol.comments li");
+	}
+});
+$(document.body).on("keypress",function(e){
+if(e.type=="keypress" && e.which==18){//also dont forget to replicate validations on the server side
+console.log("hey");
+}
+});
+$(".likez").on("click",function(){
+	$this=$(this);
+	var comment=$this.parent().parent();
+	if(!$this.hasClass("upped")){
+            $this.text(parseInt($this.text())+1);
+            $this.addClass("upped");
+    }else{
+    $this.removeClass("upped");
+	$this.text(parseInt($this.text())-1);
+	}
+$.ajax({
+		type: "post",
+		dataType: "json",
+  		url: '/commands/comments/inc',
+  		data: {id:comment.attr("id")},
+  	}).done(function(response){
+  	});
 });

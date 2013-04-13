@@ -23,6 +23,9 @@ class User < ActiveRecord::Base
       true
     end
   end
+  def commented_on?(post)
+    !Comment.where(user_id:self.id,commentable_id:post.id,commentable_type:post.class.base_class.name).first.nil?
+  end
   def subscribe!(post)
     relationshipks.create!(subscribed_id: post.id)
   end

@@ -17,21 +17,18 @@ class CommentsController < ApplicationController
       end
     end
   def create#reply or make one
-    if params[:parent_id].nil?
-      @comment=Comment.build_from(Micropost.find(params[:micropost_id]),current_user.id,params[:body])
-    else
-       @comment= Comment.build_from(Comment.find(params[:parent_id]),current_user.id,params[:body]);
-    end
+    @comment= Comment.build_from(Micropost.find(params[:micropost_id].to_i),current_user.id,params[:body])
     @micropost=Micropost.find(params[:micropost_id])
     if @comment.save
+      @comment.move_to_child_of(Comment.find(params[:parent_id].to_i)) if !params[:parent_id].nil? and params[:parent_id].to_i!=0
       respond_to do |format|
-        format.html {redirect_to "/posts/"+@micropost.id.to_s+'/'+urlify(@micropost.title)}
-        format.json {render :json => { valid: true }}
+        #format.html {redirect_to "/posts/"+@micropost.id.to_s+'/'+urlify(@micropost.title)}
+        format.json {render :json => { valid: true }} 
       end
     else
       respond_to do |format|
-        format.html {redirect_to "/posts/"+@micropost.id.to_s+'/'+urlify(@micropost.title)}
-        format.json {render :json => { valid: true,error: errors[:base] }}
+        #format.html {redirect_to "/posts/"+@micropost.id.to_s+'/'+urlify(@micropost.title)}
+        format.json {render :json => { valid: true,error: errors[:base] }} 
       end
     end
   end
