@@ -20,7 +20,7 @@ class MicropostsController < ApplicationController
     miniposts=[]
     microposts.each{|m| miniposts<<m.miniposts.limit(5)}
     respond_to do |format|
-      format.json { render :json => { :microposts=>microposts,:miniposts=>miniposts,:comments=>microposts.map{|m| m.comment_threads.count},:subscribers=>microposts.map{|m| m.subscribers.count}}}
+      format.json { render :json => { :microposts=>microposts,:usernames=>microposts.map{|m| m.user.name},:miniposts=>miniposts,:comments=>microposts.map{|m| m.comment_threads.count},:subscribers=>microposts.map{|m| m.subscribers.count}}}
       format.html { render root_path}
       end
   end
@@ -29,7 +29,7 @@ class MicropostsController < ApplicationController
   miniposts=[]
   microposts.each{|m| miniposts<<m.miniposts.limit(5)}
   respond_to do |format|
-      format.json { render :json => { :microposts=>microposts,:miniposts=>miniposts,:comments=>microposts.map{|m| m.comment_threads.count},:subscribers=>microposts.map{|m| m.subscribers.count}}}
+      format.json { render :json => { :microposts=>microposts,:usernames=>microposts.map{|m| m.user.name},:miniposts=>miniposts,:comments=>microposts.map{|m| m.comment_threads.count},:subscribers=>microposts.map{|m| m.subscribers.count}}}
       format.html { render root_path}
       end
   end

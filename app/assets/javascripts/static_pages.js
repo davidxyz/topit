@@ -38,10 +38,8 @@ var close=$(document.createElement('i'));
 close.addClass("icon-remove");
 close.addClass("icon-4x");
 mask.append(close);
-var sub_content=$(document.createElement('table'));
+var sub_content=$(document.createElement('ul'));
 mask.append(sub_content);
-var row;
-var colors=["red","green","blue","purple","brown","grey"];
 $.ajax({
 		type: "post",
 		dataType: "json",
@@ -51,30 +49,16 @@ $.ajax({
  			//response.microposts
  			var miniposts=response.miniposts;
  			response.microposts.forEach(function(value,index){
- 				if(index%5==0){row=$(document.createElement('tr'));sub_content.append(row);}
- 				var cell=$(document.createElement('td'));
- 				var main_content=$(document.createElement('div'));
- 				row.append(cell);
- 				cell.append(main_content);
- 				main_content.addClass("main_content");
+ 				var username=response.usernames[index];
+ 				var main_content=$(document.createElement('li'));
+ 				sub_content.append(main_content);
  				main_content.attr("id",value.id);
- 				main_content.attr("data-desc",value.title);
- 				main_content.height(120);main_content.width(117);
- 				main_content.css({"position":"relative","margin":"0px 5px 5px 0px","cursor":"pointer"});
- 				miniposts[index].forEach(function(value,index){
-     		var post=$(document.createElement('div'));
-     		post.attr("id",value.id);
-     		post.addClass("post");
-     		post.addClass(index==0?"true":false);
-     		var id=$(document.createElement('span'));
+ 				var title_name=value.title;
+ 				{//the top post in th toppiz
+ 					var value=miniposts[index][0];
      		var image=$(document.createElement('span'));
      		var name=$(document.createElement('span'));
      		var content=$(document.createElement('span'));
-     		var mlikes=$(document.createElement('div'));
-     		var mlikes_count=$(document.createElement('p'));
-     			id.addClass("id");
-     			id.addClass(index==0?"hide":"");
-     			id.text(index.toString()+".");
      			image.addClass("image");
      			var img=$(document.createElement('img'));
  				img.attr("src",value.image.thumb.url==null?"/assets/unknown.png":value.image.thumb.url);
@@ -82,25 +66,35 @@ $.ajax({
  				image.append(img);
  				name.text(value.name);name.addClass("name");
  				content.text(value.content.substr(0,index==0?200:150));content.addClass("content");
- 				mlikes.addClass("likes");mlikes_count.addClass("count");
- 				mlikes.append(mlikes_count);
- 				mlikes_count.text(value.likes);
- 				post.append(id);
- 				post.append(image);
- 				post.append(name);
- 				post.append(content);
- 				post.append(mlikes);
- 				});
- 				var options=$(document.createElement('div'));
- 				options.addClass('bottom');
+ 			
+ 				main_content.append(image);
+ 				main_content.append(name);
+ 				main_content.append(content);
+ 				}
+ 				var toolbar=$(document.createElement('div'));
+ 				var go_to=$(document.createElement('span'));
+ 				var title=$(document.createElement('span'));
+ 				var user=$(document.createElement('span'));
+ 				var chevron=$(document.createElement('i'));
+ 				var after=$(document.createElement('div'));
+ 				chevron.addClass("icon-chevron-right");
+ 				go_to.append(chevron);
+ 				main_content.append(go_to);main_content.append(toolbar);
+ 				go_to.addClass("goto");
+ 				user.addClass("user");
+ 				title.text(title_name+" By ");title.addClass("title");
+ 				title.append(user);user.text(username);
+ 				after.addClass("after");toolbar.append(after);
+ 				toolbar.addClass('toolbar');
  				var likes=$(document.createElement('span'));
  				var commentz=$(document.createElement('span'));
  				var subscriptions=$(document.createElement('span'));
  				likes.addClass("like_counter");commentz.addClass("comments");subscriptions.addClass("subscribers");
- 				main_content.append(options);
- 				options.append(likes);
- 				options.append(commentz);
- 				options.append(subscriptions);
+ 				main_content.append(toolbar);
+ 				toolbar.append(title);
+ 				toolbar.append(likes);
+ 				toolbar.append(commentz);
+ 				toolbar.append(subscriptions);
  				i0=$(document.createElement('i')),i1=$(document.createElement('i')),i2=$(document.createElement('i'));
  				i0.addClass('icon-comments'),i1.addClass('icon-thumbs-up'),i2.addClass('icon-bullhorn');
  				likes.append(i0);
@@ -148,46 +142,31 @@ if(e.which==13){//also dont forget to replicate validations on the server side
   	}).done(function(response){
   //show search results
   var mask=$(".mask");
-  mask.find("table").remove();
+  mask.find("ul").remove();
   var close=mask.find(".icon-remove");
-  var sub_content=$(document.createElement('table'));
+  var sub_content=$(document.createElement('ul'));
 mask.append(sub_content);
-var row;
- 			//response.microposts code duplication from subscriptions but now search results
- 			var miniposts=response.miniposts;
+
  			if(response.microposts.length<1){//nothing's here
  				var saying=$(document.createElement('p'));
  				mask.append(saying);
  				saying.addClass("nothing");
- 				saying.text("nothing...");
- 				saying.css({position:"absolute",top:"400px",left:"400px","font-weight":"bold","font-size":"30px","background-color":"red","padding":"10px 10px 10px 10px"});
+ 				saying.text("Nothing...");
+ 				saying.css({position:"absolute",top:"200px",left:"300px","font-weight":"bold","font-size":"30px","background-color":"red","padding":"10px 10px 10px 10px"});
  				return false;
  			}
+ 			var miniposts=response.miniposts;
  			response.microposts.forEach(function(value,index){
- 				if(index%5==0){row=$(document.createElement('tr'));sub_content.append(row);}
- 				var cell=$(document.createElement('td'));
- 				var main_content=$(document.createElement('div'));
- 				row.append(cell);
- 				cell.append(main_content);
- 				main_content.addClass("main_content");
+ 				var username=response.usernames[index];
+ 				var main_content=$(document.createElement('li'));
+ 				sub_content.append(main_content);
  				main_content.attr("id",value.id);
- 				main_content.attr("data-desc",value.title);
- 				main_content.height(120);main_content.width(117);
- 				main_content.css({"position":"relative","margin":"0px 5px 5px 0px","cursor":"pointer"});
- 				miniposts[index].forEach(function(value,index){
-     		var post=$(document.createElement('div'));
-     		post.attr("id",value.id);
-     		post.addClass("post");
-     		post.addClass(index==0?"true":false);
-     		var id=$(document.createElement('span'));
+ 				var title_name=value.title;
+ 				{//the top post in th toppiz
+ 					var value=miniposts[index][0];
      		var image=$(document.createElement('span'));
      		var name=$(document.createElement('span'));
      		var content=$(document.createElement('span'));
-     		var mlikes=$(document.createElement('div'));
-     		var mlikes_count=$(document.createElement('p'));
-     			id.addClass("id");
-     			id.addClass(index==0?"hide":"");
-     			id.text(index.toString()+".");
      			image.addClass("image");
      			var img=$(document.createElement('img'));
  				img.attr("src",value.image.thumb.url==null?"/assets/unknown.png":value.image.thumb.url);
@@ -195,25 +174,35 @@ var row;
  				image.append(img);
  				name.text(value.name);name.addClass("name");
  				content.text(value.content.substr(0,index==0?200:150));content.addClass("content");
- 				mlikes.addClass("likes");mlikes_count.addClass("count");
- 				mlikes.append(mlikes_count);
- 				mlikes_count.text(value.likes);
- 				post.append(id);
- 				post.append(image);
- 				post.append(name);
- 				post.append(content);
- 				post.append(mlikes);
- 				});
- 				var options=$(document.createElement('div'));
- 				options.addClass('bottom');
+ 			
+ 				main_content.append(image);
+ 				main_content.append(name);
+ 				main_content.append(content);
+ 				}
+ 				var toolbar=$(document.createElement('div'));
+ 				var go_to=$(document.createElement('span'));
+ 				var title=$(document.createElement('span'));
+ 				var user=$(document.createElement('span'));
+ 				var chevron=$(document.createElement('i'));
+ 				var after=$(document.createElement('div'));
+ 				chevron.addClass("icon-chevron-right");
+ 				go_to.append(chevron);
+ 				main_content.append(go_to);main_content.append(toolbar);
+ 				go_to.addClass("goto");
+ 				after.addClass("after");toolbar.append(after);
+ 				user.addClass("user");
+ 				title.text(title_name+" By ");title.addClass("title");
+ 				title.append(user);user.text(username);
+ 				toolbar.addClass('toolbar');
  				var likes=$(document.createElement('span'));
  				var commentz=$(document.createElement('span'));
  				var subscriptions=$(document.createElement('span'));
  				likes.addClass("like_counter");commentz.addClass("comments");subscriptions.addClass("subscribers");
- 				main_content.append(options);
- 				options.append(likes);
- 				options.append(commentz);
- 				options.append(subscriptions);
+ 				main_content.append(toolbar);
+ 				toolbar.append(title);
+ 				toolbar.append(likes);
+ 				toolbar.append(commentz);
+ 				toolbar.append(subscriptions);
  				i0=$(document.createElement('i')),i1=$(document.createElement('i')),i2=$(document.createElement('i'));
  				i0.addClass('icon-comments'),i1.addClass('icon-thumbs-up'),i2.addClass('icon-bullhorn');
  				likes.append(i0);
