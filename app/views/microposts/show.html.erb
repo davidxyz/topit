@@ -1,0 +1,73 @@
+<div id="<%=@micropost.id%>"class="main_content home">
+	
+	<div class="minipost_form" style="display:none">
+	<p><input type="text" name="name" value="" placeholder="name..."></p><span><i class="icon-link"></i><i class="icon-bold"></i><i class="icon-italic"></i></span>
+	<p><textarea name="content" value="" placeholder="Description..."></textarea></p>
+     <input type="file" name="image" value="image">
+     <div class="btn btn-info postit-btn">post</div>
+</div>
+
+<div class="up_btn disabled"><i class="icon-chevron-up icon-2x"></i><i class="btn icon-magic sign_in_please">Add</i></div>
+	<div class="wrapper">
+	     <%if @micropost.miniposts.any?%>
+     <%@micropost.miniposts.each_with_index do |post,index|%>
+     <%if post.top?%><!-- 1-->
+     <div id="<%=post.id%>"class="minipost true">
+          <span class="id hide"><p><%=index+1%>.</p></span>
+     	<span class="image"><%=image_tag "unknown.png",width:100, height:80%>
+     		</span>
+     	<span class="name"><%=post.name%></span>
+     	<span class="content"><%=(post.content*15)[0... if post.top? then 290 else 237 end]%><%if (post.content*15).length>if post.top? then 290 else 237 end%><p class="show">...</p><%end%></span>
+          <p class="hidden_content" style="display:none"><%=post.content*15%></p>
+<div class="likes <%= 'upped' if liked_it?(current_user,post,'Minipost') %>"><p class="count"><%=post.likes%></p></div>
+     	<div style="clear:both"></div>
+     </div>
+     <%elsif index<5%><!-- 1-->
+  <div id="<%=post.id%>"class="minipost false">
+     	<span class="id"><p><%=index+1%>.</p></span>
+     	<span class="image"><%=image_tag "unknown.png",width:100, height:80%></span>
+     	<span class="name"><%=post.name%></span>
+     	<span class="content"><%=(post.content*15)[0... if post.top? then 290 else 237 end]%><%if (post.content*15).length>if post.top? then 290 else 237 end%><p class="show">...</p><%end%></span>
+          <p class="hidden_content" style="display:none"><%=post.content*15%></p>
+<div class="likes <%= 'upped' if liked_it?(current_user,post,'Minipost') %>"><p class="count"><%=post.likes%></p></div>
+     	<div style="clear:both"></div>
+     </div>
+     <%else%><!-- 1-->
+  <div id="<%=post.id%>"class="minipost hidden false">
+     	<span class="id"><p><%=index+1%>.</p></span>
+     	<span class="image"><%=image_tag "unknown.png",width:100, height:80%></span>
+     	<span class="name"><%=post.name%></span>
+     	<span class="content"><%=(post.content*15)[0... if post.top? then 290 else 237 end]%><%if (post.content*15).length>if post.top? then 290 else 237 end%><p class="show">...</p><%end%></span>
+          <p class="hidden_content" style="display:none"><%=post.content*15%></p>
+<div class="likes <%= 'upped' if liked_it?(current_user,post,'Minipost') %>"><p class="count"><%=post.likes*15%></p></div>
+     	<div style="clear:both"></div>
+     </div>
+     <%end%><!-- 1-->
+     <%end%>
+     <%else%>
+     <%end%>
+ </div>
+      <div class="down_btn "><i class="icon-chevron-down icon-2x"></i></div>
+ </div>
+ <%unless @prev.nil?%>
+<a href="<%='/post/'+@next.id.to_s+'/'+urlify(@prev.title)%>" class="hleft"><i class="icon-chevron-left icon-2x"></i></a>
+<%end%>
+<%unless @next.nil?%>
+<a href="<%='/post/'+@next.id.to_s+'/'+urlify(@next.title)%>" class="hright"><i class="icon-chevron-right icon-2x"></i></a>
+<%end%>
+<div class="comments_container">
+	<div class="comments_header">
+		<span class="title"><%=@micropost.title%> by <span class="user"><%=@micropost.user.name%></span></span>
+			<span class="comments <%='upped' if commented_on_it?(current_user,@micropost)%>" data-title="comments"><i class="icon-white icon-comments sign_in_please"></i><p style="display:inline"><%=@micropost.comment_threads.size%></p></span>
+			<span class="like_counter <%='upped' if liked_it?(current_user,@micropost,'Micropost')%>" data-title="likes"><i class="icon-white icon-thumbs-up sign_in_please"></i><p style="display:inline"><%=@micropost.likes%></p></span>
+			<span class="subscribers <%='upped' if subscribed_it?(current_user,@micropost)%>" data-title="subscribers"><i class="icon-white icon-bullhorn sign_in_please"></i><p style="display:inline"><%=@micropost.subscribers.count%></p></span>
+               <a href="<%=path(Micropost.random)%>" class="btn btn-info btn-random">Random</a>
+               <!--<div class="btn btn-inverse btn-view">Slides</div>maybe-->
+	</div>
+     <ol class="comments">
+     <%if @comments.any?%>
+                    <%= render partial: 'comments/comments', collection: @comments%>
+               <div style="clear:both"></div>
+          <%end%>
+          </ol>
+</div>

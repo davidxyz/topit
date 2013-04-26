@@ -26,6 +26,268 @@ dropdown.hide();
 },500);
 }
 });
+
+$(document).on("click",".username_dropdown div.option",function(){
+if(/subscriptions/.test($(this).text())){
+//black background
+var mask=$(document.createElement('div'));
+mask.addClass("mask");
+mask.width($(window).width());mask.height($(document).height());
+$(document.body).append(mask);
+var close=$(document.createElement('i'));
+close.addClass("icon-remove");
+close.addClass("icon-4x");
+mask.append(close);
+var sub_content=$(document.createElement('table'));
+mask.append(sub_content);
+var row;
+var colors=["red","green","blue","purple","brown","grey"];
+$.ajax({
+		type: "post",
+		dataType: "json",
+  		url: '/commands/subscriptions',
+
+  		data: {}}).done(function(response){
+ 			//response.microposts
+ 			var miniposts=response.miniposts;
+ 			response.microposts.forEach(function(value,index){
+ 				if(index%5==0){row=$(document.createElement('tr'));sub_content.append(row);}
+ 				var cell=$(document.createElement('td'));
+ 				var main_content=$(document.createElement('div'));
+ 				row.append(cell);
+ 				cell.append(main_content);
+ 				main_content.addClass("main_content");
+ 				main_content.attr("id",value.id);
+ 				main_content.attr("data-desc",value.title);
+ 				main_content.height(120);main_content.width(117);
+ 				main_content.css({"position":"relative","margin":"0px 5px 5px 0px","cursor":"pointer"});
+ 				miniposts[index].forEach(function(value,index){
+     		var post=$(document.createElement('div'));
+     		post.attr("id",value.id);
+     		post.addClass("post");
+     		post.addClass(index==0?"true":false);
+     		var id=$(document.createElement('span'));
+     		var image=$(document.createElement('span'));
+     		var name=$(document.createElement('span'));
+     		var content=$(document.createElement('span'));
+     		var mlikes=$(document.createElement('div'));
+     		var mlikes_count=$(document.createElement('p'));
+     			id.addClass("id");
+     			id.addClass(index==0?"hide":"");
+     			id.text(index.toString()+".");
+     			image.addClass("image");
+     			var img=$(document.createElement('img'));
+ 				img.attr("src",value.image.thumb.url==null?"/assets/unknown.png":value.image.thumb.url);
+ 				img.width(50);img.height(50);
+ 				image.append(img);
+ 				name.text(value.name);name.addClass("name");
+ 				content.text(value.content.substr(0,index==0?200:150));content.addClass("content");
+ 				mlikes.addClass("likes");mlikes_count.addClass("count");
+ 				mlikes.append(mlikes_count);
+ 				mlikes_count.text(value.likes);
+ 				post.append(id);
+ 				post.append(image);
+ 				post.append(name);
+ 				post.append(content);
+ 				post.append(mlikes);
+ 				});
+ 				var options=$(document.createElement('div'));
+ 				options.addClass('bottom');
+ 				var likes=$(document.createElement('span'));
+ 				var commentz=$(document.createElement('span'));
+ 				var subscriptions=$(document.createElement('span'));
+ 				likes.addClass("like_counter");commentz.addClass("comments");subscriptions.addClass("subscribers");
+ 				main_content.append(options);
+ 				options.append(likes);
+ 				options.append(commentz);
+ 				options.append(subscriptions);
+ 				i0=$(document.createElement('i')),i1=$(document.createElement('i')),i2=$(document.createElement('i'));
+ 				i0.addClass('icon-comments'),i1.addClass('icon-thumbs-up'),i2.addClass('icon-bullhorn');
+ 				likes.append(i0);
+ 				commentz.append(i1);
+ 				subscriptions.append(i2);
+ 				likes.append($(document.createElement('p')).text(response.comments[index]));
+ 				commentz.append($(document.createElement('p')).text(value.likes));
+ 				subscriptions.append($(document.createElement('p')).text(response.subscribers[index]));
+ 			});
+});
+}else if(/search/.test($(this).text())){
+var mask=$(document.createElement('div'));
+mask.addClass("mask");
+mask.attr("id","mask");
+mask.width($(window).width());mask.height($(document).height());
+$(document.body).append(mask);
+var close=$(document.createElement('i'));
+close.addClass("icon-remove");
+close.addClass("icon-4x");
+mask.append(close);
+var input=$(document.createElement('input'));
+var Saying=$(document.createElement('p'));
+Saying.addClass("saying");
+Saying.attr("id","saying");
+Saying.text("Search");
+input.attr("type","text");
+input.addClass("search_");
+input.attr("placeholder","...");
+mask.append(Saying);
+mask.append(input);
+}
+});
+
+var keypresssearch_key=true;
+$(document).on("keypress",".search_",function(e){
+if(e.which==13){//also dont forget to replicate validations on the server side
+	if(keypresssearch_key){
+	keypresssearch_key=false;
+	$(".nothing").remove();
+		$.ajax({
+		type: "post",
+		dataType: "json",
+  		url: '/search',
+  		data: {search:$(this).val()},
+  	}).done(function(response){
+  //show search results
+  var mask=$(".mask");
+  mask.find("table").remove();
+  var close=mask.find(".icon-remove");
+  var sub_content=$(document.createElement('table'));
+mask.append(sub_content);
+var row;
+ 			//response.microposts code duplication from subscriptions but now search results
+ 			var miniposts=response.miniposts;
+ 			if(response.microposts.length<1){//nothing's here
+ 				var saying=$(document.createElement('p'));
+ 				mask.append(saying);
+ 				saying.addClass("nothing");
+ 				saying.text("nothing...");
+ 				saying.css({position:"absolute",top:"400px",left:"400px","font-weight":"bold","font-size":"30px","background-color":"red","padding":"10px 10px 10px 10px"});
+ 				return false;
+ 			}
+ 			response.microposts.forEach(function(value,index){
+ 				if(index%5==0){row=$(document.createElement('tr'));sub_content.append(row);}
+ 				var cell=$(document.createElement('td'));
+ 				var main_content=$(document.createElement('div'));
+ 				row.append(cell);
+ 				cell.append(main_content);
+ 				main_content.addClass("main_content");
+ 				main_content.attr("id",value.id);
+ 				main_content.attr("data-desc",value.title);
+ 				main_content.height(120);main_content.width(117);
+ 				main_content.css({"position":"relative","margin":"0px 5px 5px 0px","cursor":"pointer"});
+ 				miniposts[index].forEach(function(value,index){
+     		var post=$(document.createElement('div'));
+     		post.attr("id",value.id);
+     		post.addClass("post");
+     		post.addClass(index==0?"true":false);
+     		var id=$(document.createElement('span'));
+     		var image=$(document.createElement('span'));
+     		var name=$(document.createElement('span'));
+     		var content=$(document.createElement('span'));
+     		var mlikes=$(document.createElement('div'));
+     		var mlikes_count=$(document.createElement('p'));
+     			id.addClass("id");
+     			id.addClass(index==0?"hide":"");
+     			id.text(index.toString()+".");
+     			image.addClass("image");
+     			var img=$(document.createElement('img'));
+ 				img.attr("src",value.image.thumb.url==null?"/assets/unknown.png":value.image.thumb.url);
+ 				img.width(50);img.height(50);
+ 				image.append(img);
+ 				name.text(value.name);name.addClass("name");
+ 				content.text(value.content.substr(0,index==0?200:150));content.addClass("content");
+ 				mlikes.addClass("likes");mlikes_count.addClass("count");
+ 				mlikes.append(mlikes_count);
+ 				mlikes_count.text(value.likes);
+ 				post.append(id);
+ 				post.append(image);
+ 				post.append(name);
+ 				post.append(content);
+ 				post.append(mlikes);
+ 				});
+ 				var options=$(document.createElement('div'));
+ 				options.addClass('bottom');
+ 				var likes=$(document.createElement('span'));
+ 				var commentz=$(document.createElement('span'));
+ 				var subscriptions=$(document.createElement('span'));
+ 				likes.addClass("like_counter");commentz.addClass("comments");subscriptions.addClass("subscribers");
+ 				main_content.append(options);
+ 				options.append(likes);
+ 				options.append(commentz);
+ 				options.append(subscriptions);
+ 				i0=$(document.createElement('i')),i1=$(document.createElement('i')),i2=$(document.createElement('i'));
+ 				i0.addClass('icon-comments'),i1.addClass('icon-thumbs-up'),i2.addClass('icon-bullhorn');
+ 				likes.append(i0);
+ 				commentz.append(i1);
+ 				subscriptions.append(i2);
+ 				likes.append($(document.createElement('p')).text(response.comments[index]));
+ 				commentz.append($(document.createElement('p')).text(value.likes));
+ 				subscriptions.append($(document.createElement('p')).text(response.subscribers[index]));
+  	});
+});
+}else{keypresssearch_key=true;}
+}
+});
+$(document).on("mouseenter mouseleave",".mask .main_content",function(e){
+var colors=["red","green","blue","purple","brown","grey"];
+$this=$(this);
+if(e.type=="mouseenter"){
+	$this.addClass("active");
+ var tooltip=$(document.createElement('div'));
+	tooltip.addClass('subtooltip');
+var offset = $this.offset();
+var height = $this.height();
+var width = $this.width();
+var top = offset.top -50 ;
+var left = offset.left +20;
+var b4=$(document.createElement('span'));
+var mask_offset_top=$(".mask").offset().top;
+b4.addClass("tip");b4.addClass("subtooltip");
+var color=colors[Math.round(Math.random()*(colors.length-1))];
+	tooltip.css({
+        position: 'absolute',
+        background: color,
+        padding: '8px',
+        zIndex: 999,
+        display: 'block',
+        left:  left+ "px",
+        height:"20px",
+        "font-size":"11px",
+        "font-weight":"bold",
+        "text-shadow":"0px 2px black",
+        "text-transform":"capitalize",
+        "text-align":"center",
+        top:(top-mask_offset_top)+ "px",
+        color:'white'
+    }).appendTo($this.parent());
+    b4.css({"background-color":color,top:(top-mask_offset_top)+30+"px",left:left+10+"px"});
+    b4.appendTo($this.parent());
+    tooltip.text($this.attr("data-desc"));
+}else{
+$(".subtooltip").remove();
+$this.removeClass("active");
+}
+});
+var click_locker_key=true;
+$(document).on("click",".mask .main_content",function(e){
+	if(click_locker_key){
+		click_locker_key=false;
+	$this=$(this);
+	$(".mask .main_content").hide();
+	$this.show();
+	$this.animate({width:"500px",height:"500px",top:"100px",left:"300px"});
+	$this.find(".bottom").children().animate({"left":"+=200px"});
+	if(!$this.hasClass("clicked")){
+		$this.addClass("clicked");
+	}else{
+		location.href="/post/"+$this.attr("id")+"/"+$this.attr("data-desc").split("").map(function(value,index){return value==" "?"_":value;}).join("");
+	}
+}else{
+	click_locker_key=true;
+}
+	});
+$(document).on("click",".icon-remove",function(){
+$(".mask").remove();
+});
 if($(".container_login.post").length>0){
 var $this=$(".container_login.post");
 $this.addClass("postit");
@@ -55,7 +317,6 @@ $(".home .icon-magic").click(function(){
 	}else{
 	$(".minipost_form").fadeOut(1000);
 	if(!$(".down_btn").data("lock")) $(".down_btn").removeClass("disabled");
-	$(".down_btn").addClass("disabled");
 	$(".minipost").animate({top:"-="+$(".minipost_form").height()+'px',opacity:'1'},1000);
 	$(".main_content .wrapper>:nth-child(5)").show();
 	$this.removeClass("active");
@@ -474,7 +735,7 @@ pos==0?minipost.prependTo($(".wrapper")):minipost.insertAfter($(".minipost")[pos
 		minipost.children(".go_back").remove();
 	
 });
-function constructComment(comment){
+function constructComment(comment,parent){
 	var comment_wrapper=$(document.createElement('li'));
 	var name=$(document.createElement('p'));
 	var body=$(document.createElement('p'));
@@ -485,8 +746,8 @@ function constructComment(comment){
 	comment_wrapper.addClass("comment_wrapper");
 	name.addClass("name");
 	name.text(comment.children("p").text());
-	med_container.addClass("container");
-	meds.addClass("likez");meds.text(1);
+	container.addClass("container");
+	likes.addClass("likez");
 	commentz.addClass("commentz");
 	commentz.text("0");
 	timestamp.addClass("timestamp");timestamp.text("Posted 1 second ago");
@@ -499,28 +760,29 @@ function constructComment(comment){
 	container.append(likes);
 	container.append(commentz);
 	comment_wrapper.append(timestamp);
-	comment_wrapper.prependTo($("ol.comments"));
+	console.log(comment_wrapper);
+	comment.remove();
+	if(parent==undefined){comment_wrapper.prependTo($("ol.comments"));}else{comment_wrapper.insertAfter(parent);comment_wrapper.addClass("child")}
 	$(".comment_wrapper").fadeTo(500,1);
-	$(".comments i").trigger("click");
 }
 var comment_text_key=true;
 $(document).on("keypress",".comment_text textarea",function(e){
 if(e.type=="keypress" && e.which==13){//also dont forget to replicate validations on the server side
+	console.log(comment_text_key);
 	if(comment_text_key){
+		comment_text_key=false;
 	var $this=$(this);
-	if($this.val()=="" || $this.val().legnth<3){return false;}
-//exit if the user submits 
+	if($this.val()=="" || $this.val().length<3){return false;}
 		var id=$(".main_content").attr('id');
 		$.ajax({
 		type: "post",
 		dataType: "json",
   		url: '/commands/create_a_comment',
-  		data: {micropost_id:id,body:$this.val()},
+  		data: $this.attr("id")==undefined?{micropost_id:id,body:$this.val()}:{micropost_id:id,body:$this.val(),parent_id:$this.attr("id")},
   	}).done(function(response){
   		
 	if(response.valid==true){//animate a DIY bounce effect
-		constructComment($this.parent());
-		comment_text_key=false;
+		constructComment($this.parent(),$this.attr("id")==undefined?$(".comment_wrapper#"+$this.attr("id")):undefined);
 
 	}
 	else{//error
@@ -543,6 +805,7 @@ if(!$(this).hasClass("active")){
 	var text=$(document.createElement('textarea'));
 	var p=$(this).parent().parent();
 	comment.addClass("comment_text");
+	comment.attr("id",$(this).parents(".comment_wrapper").attr("id"));
 	comment.appendTo($(document.body));
 	comment.append(text);
 	comment.prepend(name);
@@ -560,9 +823,15 @@ if(!$(this).hasClass("active")){
 		var comments=$("ol.comments li");
 	}
 });
-$(document.body).on("keypress",function(e){
-if(e.type=="keypress" && e.which==18){//also dont forget to replicate validations on the server side
-console.log("hey");
+$(document.body).on("keydown",function(e){//shortcut keys
+
+if(e.keyCode==37){//left
+}else if(e.keyCode==38){//up
+$(".up_btn").trigger("click");
+}else if(e.keyCode==39){//right
+
+}else if(e.keyCode==40){//down
+$(".down_btn").trigger("click");
 }
 });
 $(".likez").on("click",function(){
@@ -583,3 +852,4 @@ $.ajax({
   	}).done(function(response){
   	});
 });
+//up right bottom left btns

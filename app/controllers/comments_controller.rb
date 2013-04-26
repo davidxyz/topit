@@ -18,7 +18,6 @@ class CommentsController < ApplicationController
     end
   def create#reply or make one
     @comment= Comment.build_from(Micropost.find(params[:micropost_id].to_i),current_user.id,params[:body])
-    @micropost=Micropost.find(params[:micropost_id])
     if @comment.save
       @comment.move_to_child_of(Comment.find(params[:parent_id].to_i)) if !params[:parent_id].nil? and params[:parent_id].to_i!=0
       respond_to do |format|

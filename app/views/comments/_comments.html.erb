@@ -1,7 +1,7 @@
 <li id="<%=comments.id%>" class="comment_wrapper <%= 'child' unless comments.parent_id.nil?%>">
-	<div class="container" style="width:<%=comments.user.name.length*5%>px"><p class="name"><%=comments.user.name%></p><span class="likez <%='upped' if liked_it?(current_user,comments,"Comment")%>" data-title="like?"><%=comments.likes%></span><span class="commentz" data-title="comment?"><%=comments.children.size%></span></div>
-<p class="body"><%=comments.body*20%></p>
+	<div class="container" style="width:<%=comments.user.name.length*5%>px"><p class="name"><%=comments.user.name%></p><span style="width:<%=comments.user.name.length*3%>px" class="likez <%='upped' if liked_it?(current_user,comments,"Comment")%>" data-title="like?"><%=comments.likes%></span><span class="commentz" style="width:<%=comments.user.name.length*3%>px" data-title="comment?"><%=comments.children.size%></span></div>
+<p class="body"><%=comments.body%></p>
 <div style="clear:both"></div>
-		<div class="timestamp">Posted <%=time_ago_in_words(comments.created_at)%> ago.</div>
+		<i class="icon-close icon-2x icon-white"></i><span class="timestamp">Posted <%=time_ago_in_words(comments.created_at)%> ago.</span>
 </li>
 

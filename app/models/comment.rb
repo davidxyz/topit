@@ -1,7 +1,5 @@
 class Comment < ActiveRecord::Base
   acts_as_nested_set :scope => [:commentable_id, :commentable_type]
-has_many :reverse_relationshipls,foreign_key: "liked_id",foreign_key:"Comment",class_name:"Relationshipl", dependent: :destroy
- has_many :likers, through: :reverse_relationshipls,source: :liker
   validates_presence_of :body
   validates_presence_of :user
 

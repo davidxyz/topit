@@ -1,5 +1,6 @@
+require 'will_paginate/array'
 class MicropostsController < ApplicationController
-  before_filter :signed_in_user, only: [:new,:create, :destroy,:increment,:subscribe]
+  before_filter :signed_in_user, only: [:new,:create, :destroy,:increment,:subscribe,:subscriptions]
   before_filter :correct_user, only: :destroy
   
   #have to incoporate some type of user controls so they can get more from their fee
@@ -10,7 +11,27 @@ class MicropostsController < ApplicationController
     @micropost=Micropost.find(params[:id])
     not_found if @micropost.nil?
     @comments=@micropost.comments.paginate(page: params[:page])
-    render 'static_pages/home'
+    current_user.justify(@micropost) if signed_in?
+    @next=@micropost.next
+    @prev=@micropost.prev
+  end
+  def subscriptions
+    microposts=current_user.subscribeds
+    miniposts=[]
+    microposts.each{|m| miniposts<<m.miniposts.limit(5)}
+    respond_to do |format|
+      format.json { render :json => { :microposts=>microposts,:miniposts=>miniposts,:comments=>microposts.map{|m| m.comment_threads.count},:subscribers=>microposts.map{|m| m.subscribers.count}}}
+      format.html { render root_path}
+      end
+  end
+  def search
+  microposts=Micropost.search(params[:search])
+  miniposts=[]
+  microposts.each{|m| miniposts<<m.miniposts.limit(5)}
+  respond_to do |format|
+      format.json { render :json => { :microposts=>microposts,:miniposts=>miniposts,:comments=>microposts.map{|m| m.comment_threads.count},:subscribers=>microposts.map{|m| m.subscribers.count}}}
+      format.html { render root_path}
+      end
   end
   def increment
       @micropost=Micropost.find(params[:id])
